@@ -12,4 +12,5 @@ include_directories(include/)
 set (HEADERS include/lfu_cache.hpp)
 set (SOURCES src/main.cpp src/lfu_cache.cpp)
 
-add_executable (main src/main.cpp include/lfu_cache.hpp include/perfect_cache.hpp)
+add_executable (lfu src/lfu.cpp include/lfu_cache.hpp)
+add_executable (perfect src/perfect.cpp include/perfect_cache.hpp)

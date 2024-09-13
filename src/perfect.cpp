@@ -1,8 +1,11 @@
-#include "lfu_cache.hpp"
 #include "perfect_cache.hpp"
 
-#include <time.h>
-#include <fstream>
+#define DEBUG
+
+#ifdef DEBUG
+    #include <time.h>
+#endif
+
 #include <iostream>
 
 
@@ -24,32 +27,22 @@ int main() {
     }
 
     unsigned int start_cache = clock ();
-    
-    LFUCache cache_lfu(m);
-    size_t total_hits = 0;
-
-    for (int i = 0; i < n; i++) {
-        total_hits += cache_lfu.lookup_update (cache_buff[i], slow_get_page);
-    }
-
-    unsigned int end_cache = clock ();
-
-    std::cout << "LFU-cache: " << total_hits << " hits" << std::endl;
-    std::cout << "LFU-cache time: " << static_cast<float>(end_cache - start_cache) / static_cast<float>(CLOCKS_PER_SEC) << " sec" << std::endl;
-
-    start_cache = clock ();
 
     PerfectCache<int> cache_perfect(m, n, cache_buff);
-    total_hits = 0;
+    size_t total_hits = 0;
 
     for (int i = 0; i < n; i++) {
         total_hits += cache_perfect.lookup_update (cache_buff[i], slow_get_page);
     }
 
-    end_cache = clock ();
+    unsigned int end_cache = clock ();
 
+#ifdef DEBUG
     std::cout << "Perfect-cache: " << total_hits << " hits" << std::endl;
     std::cout << "Perfect-cache time: " << static_cast<float>(end_cache - start_cache) / static_cast<float>(CLOCKS_PER_SEC) << " sec" << std::endl;
+#else
+    std::cout << total_hits << std::endl;
+#endif
 
     return 0;
 }
