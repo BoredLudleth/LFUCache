@@ -8,7 +8,6 @@
 
 #include <iostream>
 
-
 int slow_get_page(int key) {
     return key;
 }
@@ -19,7 +18,7 @@ int main() {
     
     std::cin >> m >> n;
 
-    std::vector<int> cache_buff;
+    std::deque<int> cache_buff;
 
     for (int i = 0, temp = 0; i < n; i++) {
         std::cin >> temp;
@@ -32,7 +31,7 @@ int main() {
     size_t total_hits = 0;
 
     for (int i = 0; i < n; i++) {
-        total_hits += cache_perfect.lookup_update (cache_buff[i], slow_get_page);
+        total_hits += cache_perfect.lookup_update (cache_buff, slow_get_page);
     }
 
     unsigned int end_cache = clock ();

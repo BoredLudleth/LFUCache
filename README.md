@@ -15,7 +15,8 @@ cmake --build .
 Для запуска проекта требуется:
 
 ```
-./main < path_to_test_file
+./lfu < path_to_test_file
+./perfect < path_to_test_file
 ```
 
 ## Ввод/вывод
