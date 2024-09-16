@@ -1,6 +1,6 @@
 #include "lfu_cache.hpp"
 
-#define DEBUG
+// #define DEBUG
 
 #ifdef DEBUG
     #include <time.h>
