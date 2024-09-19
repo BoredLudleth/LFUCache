@@ -9,6 +9,7 @@
 ```
 cd Cache/
 cmake -S ./ -B build/
+cmake --build build
 cd build/
 cmake --build .
 ```
@@ -17,6 +18,7 @@ cmake --build .
 ```
 ./lfu < path_to_test_file
 ./perfect < path_to_test_file
+./cache_test
 ```
 
 ## Ввод/вывод

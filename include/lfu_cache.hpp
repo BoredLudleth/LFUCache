@@ -21,6 +21,7 @@ class LFUCache {
 
     std::unordered_map<KeyT, ListIt> hash_;
     std::unordered_map<KeyT, FreqT> freq_;
+    std::unordered_map<KeyT, ListIt> hash_data;
     std::unordered_map<FreqT, std::list<int>> data;
 
     FreqT min_freq = 1;
@@ -35,19 +36,22 @@ public:
     void replace (KeyT key) {
         auto hit = hash_.find(key);
 
-        // data[freq_[key]].erase(std::find(data[freq_[key]].begin(), data[freq_[key]].end(), key));
+        data[freq_[key]].erase(hash_data[key]);
         ++freq_[key];
         data[freq_[key]].push_back(key);
+        hash_data[key] = --data[freq_[key]].end();
     }
 
     template <typename F>
     bool lookup_update(KeyT key, F slow_get_page) {
         auto hit = hash_.find(key);
 
+        // print();
         if (hit == hash_.end()) {
             if (full()) {
                 cache_.erase(hash_[data[min_freq].front()]);
                 hash_.erase(data[min_freq].front());
+                hash_data.erase(data[min_freq].front());
                 data[min_freq].pop_front();
                 --amount;
             }
@@ -62,6 +66,7 @@ public:
 
             hash_[key] = cache_.begin();
             data[freq_[key]].push_back(key);
+            hash_data[key] = --data[freq_[key]].end();
 
             ++amount;
 
