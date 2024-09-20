@@ -7,11 +7,10 @@
 
 ## Компиляция
 ```
-cd Cache/
+cd LFUCache/
 cmake -S ./ -B build/
 cmake --build build
 cd build/
-cmake --build .
 ```
 Для запуска проекта требуется:
 

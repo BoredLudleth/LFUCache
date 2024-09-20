@@ -24,7 +24,7 @@ class PerfectCache {
 
     std::unordered_map<KeyT, std::list<int>> input_arr;
     int input_length;
-    int current_page = 0;
+    int current_page = -1;
 
     bool full() const {
         return (size > amount) ? false : true;
@@ -32,9 +32,6 @@ class PerfectCache {
 
     int recount_next_hit (KeyT key) {
         input_arr[key].pop_front();
-        if (input_arr[key].empty()) {
-            return input_length;
-        }
 
         KeyT result = input_arr[key].front();
         return result;
@@ -47,13 +44,15 @@ public:
         for (auto it = input.begin(); it != input.end(); ++it, ++cur_page) {
             input_arr[*it].push_back(cur_page);
         }
+        for (auto it = input_arr.begin(); it != input_arr.end(); ++it) {
+            it->second.push_back(input_length);
+        }
                                                                              };
 
     template <typename F>
     bool lookup_update(KeyT key, F slow_get_page) {
-        // print();
-
         ++current_page;
+        // print();
 
         auto hit = hash_.find(key);
 
@@ -67,24 +66,27 @@ public:
             if (full()) {
                 auto it = next_hit.end();
                 --it;
-
-                cache_.erase(hash_[it->second.front()]);
-                hash_.erase(it->second.front());
+                cache_.erase(hash_[it->second.back()]);
+                hash_.erase(it->second.back());
                 it->second.pop_back();
-                if (it->second.empty())
-                next_hit.erase(it);
+
+                if (it->second.empty()) {
+                    next_hit.erase(it);
+                }
+
                 amount--;
             }
 
             amount++;
             cache_.push_front(slow_get_page(key));
             hash_[key] = cache_.begin();
+            next_hit.erase(current_page);
             next_hit[length_next_it].push_back(key);
 
             return false;
         }
 
-        next_hit.erase(current_page - 1);
+        next_hit.erase(current_page);
         next_hit[length_next_it].push_back(key);
 
         return true;
