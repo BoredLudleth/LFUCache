@@ -37,7 +37,7 @@ int main() {
 
     unsigned int end_cache = clock ();
 
-    #ifdef DEBUG
+    #ifdef DEBUG 1
         std::cout << "LFU-cache: " << total_hits << " hits" << std::endl;
         std::cout << "LFU-cache time: " << static_cast<float>(end_cache - start_cache) / static_cast<float>(CLOCKS_PER_SEC) << " sec" << std::endl;
     #else

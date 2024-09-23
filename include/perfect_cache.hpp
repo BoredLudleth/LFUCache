@@ -1,5 +1,4 @@
-#ifndef PERFECT_CACHE_HPP
-#define PERFECT_CACHE_HPP
+#pragma once
 
 #include <list>
 #include <vector>
@@ -7,7 +6,6 @@
 #include <algorithm>
 #include <map>
 #include <iostream>
-// #include <deque>
 
 template <typename KeyT = int>
 class PerfectCache {
@@ -100,4 +98,3 @@ public:
         std::cout << std::endl;
     }
 };
-#endif

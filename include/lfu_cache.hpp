@@ -1,5 +1,4 @@
-#ifndef LFU_CACHE_HPP
-#define LFU_CACHE_HPP
+#pragma once
 
 #include <list>
 #include <vector>
@@ -31,7 +30,7 @@ class LFUCache {
     }
 
 public:
-    LFUCache(size_t& size) : size(size) {};
+    LFUCache(size_t size) : size(size) {};
 
     void replace (KeyT key) {
         auto hit = hash_.find(key);
@@ -94,4 +93,3 @@ public:
         std::cout << std::endl;
     }
 };
-#endif
