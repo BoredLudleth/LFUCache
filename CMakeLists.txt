@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 
 project(cache)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 include_directories(include/)
 
@@ -20,5 +20,3 @@ target_link_libraries(
     cache_test
   GTest::gtest_main
 )
-
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/test DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/build/)

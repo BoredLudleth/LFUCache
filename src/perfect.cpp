@@ -1,12 +1,15 @@
 #include "perfect_cache.hpp"
 
-// #define DEBUG
+#define DEBUG
 
 #ifdef DEBUG
-    #include <time.h>
+    #include <ctime>
 #endif
 
 #include <iostream>
+#include <limits>
+
+constexpr auto max_size = std::numeric_limits<std::streamsize>::max();
 
 int slow_get_page(int key) {
     return key;
@@ -16,7 +19,12 @@ int main() {
     size_t m;          //size
     size_t n;          //number of pages
     
-    std::cin >> m >> n;
+    while ((std::cin >> m >> n).fail()) {
+        std::cout << "ERROR::input doesn't recognized. Try again" << std::endl;
+
+        std::cin.clear();
+        std::cin.ignore(max_size, '\n');
+    }
 
     std::vector<int> cache_buff;
 

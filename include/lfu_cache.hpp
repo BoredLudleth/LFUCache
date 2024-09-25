@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <iostream>
 #include <algorithm>
+#include <format>
 
 template <typename KeyT = int>
 class LFUCache {
@@ -86,8 +87,8 @@ public:
     }
 
     void print() {
-        for (auto it = cache_.begin(); it != cache_.end(); ++it) {
-            std::cout << *it << "(" << freq_[*it] << ")"<< " ";
+        for (const auto &page : cache_) {
+            std::cout << std::format("{}({}) ", page, freq_[page]);
         }
 
         std::cout << std::endl;

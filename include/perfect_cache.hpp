@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <map>
 #include <iostream>
+#include <format>
 
 template <typename KeyT = int>
 class PerfectCache {
@@ -42,8 +43,8 @@ public:
         for (auto it = input.begin(); it != input.end(); ++it, ++cur_page) {
             input_arr[*it].push_back(cur_page);
         }
-        for (auto it = input_arr.begin(); it != input_arr.end(); ++it) {
-            it->second.push_back(input_length);
+        for (auto &cur_page : input_arr) {
+            cur_page.second.push_back(input_length);
         }
                                                                              };
 
@@ -91,8 +92,8 @@ public:
     }
 
     void print() {
-        for (auto it = cache_.begin(); it != cache_.end(); ++it) {
-            std::cout << *it << "(" << input_arr[*it].front() << ")" <<" ";
+        for (const auto &page : cache_) {
+            std::cout << std::format("{}({}) ", page, input_arr[page].front());
         }
 
         std::cout << std::endl;
