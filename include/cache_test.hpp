@@ -7,44 +7,34 @@
 #include <string>
 #include <cstdlib>
 
-#include <filesystem>
+#include "lfu_cache.hpp"
+#include "perfect_cache.hpp"
 
-std::string runBinary(const std::string& binaryPath, const std::string& input);
+extern int slow_get_page(int key);
 
-TEST(BinaryTestPerfect, KnownInput) {
-    std::filesystem::path cur_path = std::filesystem::current_path().relative_path();
+TEST(TestPerfectLookUp, CacheTest) {
+    size_t sz = 4;
+    size_t input_length = 12;
+    std::vector<int> input{1, 2, 3, 4, 1, 2, 5, 1, 2, 4, 3, 4}; 
 
-    std::string exe;
-    std::string test;
+    PerfectCache<int> cache(sz, input_length, input);
 
-    if (cur_path.filename() == "build") {
-        exe = "./perfect";
-        test = "../test/";
-    } else {
-        exe = "./build/perfect";
-        test = "test/";
+    std::vector<bool> answers{0,0,0,0,1,1,0,1,1,1,1,1};
+    for (int i = 0; i < input_length; ++i) {
+        EXPECT_EQ(cache.lookup_update(input[i], slow_get_page), answers[i]);
     }
-    EXPECT_EQ(runBinary(exe, test + "002.dat"), "7\n");
-    EXPECT_EQ(runBinary(exe, test + "004.dat"), "18\n");
-    EXPECT_EQ(runBinary(exe, test + "006.dat"), "327\n");
-    EXPECT_EQ(runBinary(exe, test + "011.dat"), "89999\n");
 }
 
-TEST(BinaryTestLFU, KnownInput) {
-    std::filesystem::path cur_path = std::filesystem::current_path().relative_path();
+TEST(TestLFULookUp, CacheTest) {
+    size_t sz = 4;
+    size_t input_length = 12;
+    std::vector<int> input{1, 2, 3, 4, 1, 2, 5, 1, 2, 4, 3, 4}; 
 
-    std::string exe;
-    std::string test;
+    LFUCache<int> cache(sz);
 
-    if (cur_path.filename() == "build") {
-        exe = "./lfu";
-        test = "../test/";
-    } else {
-        exe = "./build/lfu";
-        test = "test/";
+    std::vector<bool> answers{0,0,0,0,1,1,0,1,1,1,0,1};
+    for (int i = 0; i < input_length; ++i) {
+        EXPECT_EQ(cache.lookup_update(input[i], slow_get_page), answers[i]);
     }
-    EXPECT_EQ(runBinary(exe, test + "002.dat"), "6\n");
-    EXPECT_EQ(runBinary(exe, test + "004.dat"), "13\n");
-    EXPECT_EQ(runBinary(exe, test + "006.dat"), "179\n");
-    EXPECT_EQ(runBinary(exe, test + "011.dat"), "89999\n");
 }
+

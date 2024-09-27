@@ -1,6 +1,6 @@
 #include "perfect_cache.hpp"
 
-#define DEBUG
+// #define DEBUG
 
 #ifdef DEBUG
     #include <ctime>

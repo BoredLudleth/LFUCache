@@ -30,9 +30,6 @@ class LFUCache {
         return (size > amount) ? false : true;
     }
 
-public:
-    LFUCache(size_t size) : size(size) {};
-
     void replace (KeyT key) {
         auto hit = hash_.find(key);
 
@@ -42,6 +39,22 @@ public:
         hash_data[key] = --data[freq_[key]].end();
     }
 
+    void erase_min_freq() {
+        cache_.erase(hash_[data[min_freq].front()]);
+        hash_.erase(data[min_freq].front());
+        hash_data.erase(data[min_freq].front());
+        data[min_freq].pop_front();
+        --amount;
+    }
+
+    void update_min_freq(KeyT key) {
+        if (data[min_freq].empty() || min_freq > freq_[key])
+            min_freq = freq_[key];
+    }
+
+public:
+    LFUCache(size_t size) : size(size) {};
+
     template <typename F>
     bool lookup_update(KeyT key, F slow_get_page) {
         auto hit = hash_.find(key);
@@ -49,11 +62,7 @@ public:
         // print();
         if (hit == hash_.end()) {
             if (full()) {
-                cache_.erase(hash_[data[min_freq].front()]);
-                hash_.erase(data[min_freq].front());
-                hash_data.erase(data[min_freq].front());
-                data[min_freq].pop_front();
-                --amount;
+                erase_min_freq();
             }
 
             cache_.push_front(slow_get_page(key));
@@ -67,28 +76,22 @@ public:
             hash_[key] = cache_.begin();
             data[freq_[key]].push_back(key);
             hash_data[key] = --data[freq_[key]].end();
-
             ++amount;
 
-            if (data[min_freq].empty() || min_freq > freq_[key]) {
-                min_freq = freq_[key];
-            }
+            update_min_freq(key);
 
             return false;
         }
 
         replace(key);
-
-        if (data[min_freq].empty()) {
-            min_freq = freq_[key];
-        }
+        update_min_freq(key);
 
         return true;
     }
 
-    void print() {
+    void print() const {
         for (const auto &page : cache_) {
-            std::cout << std::format("{}({}) ", page, freq_[page]);
+            std::cout << std::format("{} ", page);
         }
 
         std::cout << std::endl;

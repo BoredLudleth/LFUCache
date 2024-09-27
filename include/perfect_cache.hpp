@@ -36,8 +36,22 @@ class PerfectCache {
         return result;
     }
 
+    void erase_farrest() {
+        auto it = next_hit.end();
+        --it;
+        cache_.erase(hash_[it->second.back()]);
+        hash_.erase(it->second.back());
+        it->second.pop_back();
+
+        if (it->second.empty()) {
+            next_hit.erase(it);
+        }
+
+        amount--;
+    }
+
 public:
-    PerfectCache(size_t& size ,size_t& input_length, std::vector<int> input) : size(size)
+    PerfectCache(size_t size ,size_t input_length, const std::vector<int>& input) : size(size)
                                                                              , input_length(input_length) {
         int cur_page = 0;
         for (auto it = input.begin(); it != input.end(); ++it, ++cur_page) {
@@ -63,17 +77,7 @@ public:
             }
             // missed
             if (full()) {
-                auto it = next_hit.end();
-                --it;
-                cache_.erase(hash_[it->second.back()]);
-                hash_.erase(it->second.back());
-                it->second.pop_back();
-
-                if (it->second.empty()) {
-                    next_hit.erase(it);
-                }
-
-                amount--;
+                erase_farrest();
             }
 
             amount++;
@@ -91,9 +95,9 @@ public:
         return true;
     }
 
-    void print() {
+    void print() const {
         for (const auto &page : cache_) {
-            std::cout << std::format("{}({}) ", page, input_arr[page].front());
+            std::cout << std::format("{} ", page);
         }
 
         std::cout << std::endl;
